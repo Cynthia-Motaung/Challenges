@@ -18,9 +18,9 @@ I am using this application to learn Entity Framework Core, from beginner to adv
 ### Technologies
 
 - C#
-- LINQ
+- ASP.NET Core
 - Entity Framework Core
-- SQL Server and PostgreSQL
+- SQL Server
 - GitHub for version control
 
 ### How to Contribute
