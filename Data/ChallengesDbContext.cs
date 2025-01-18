@@ -16,10 +16,13 @@ namespace Challenges.Data
         public DbSet<Milestone> Milestones {get;set;}
         public DbSet<Log> Logs {get;set;}
         public DbSet<User> Users {get;set;}
+        public DbSet<Reward> Rewards {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<Category>()
+                .HasIndex(c => c.CategoryName)
+                .IsUnique();
             
             base.OnModelCreating(modelBuilder);
         }
