@@ -1,6 +1,13 @@
+using Challenges.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<ChallengesDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ChallengesConnection")));
+builder.Services.AddDbContextPool<ChallengesDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("ChallengesConnection")));
+
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
