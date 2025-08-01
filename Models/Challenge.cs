@@ -6,21 +6,17 @@ namespace Challenges.Models
     public class Challenge
     {
         [Key]
-        public int ChallengeId {get;set;}
- 
-        //public int UserId {get;set;}
+        public int Id {get;set;}
 
         public int CategoryId {get;set;}
 
-        public int RewardId {get;set;}
-
         [Required]
         [StringLength(50)]
-        public string Title {get;set;}
+        public string Title {get;set;} = null!;
 
         [Required]
         [StringLength(250)]
-        public string Description {get;set;}
+        public string Description {get;set;} = null!;
 
         public DateOnly StartDate {get;set;}
 
@@ -28,25 +24,26 @@ namespace Challenges.Models
 
         public DateTime CreatedAt {get;set;} = DateTime.Now;
 
-        public DateTime UpdatedAt {get;set;} = DateTime.Now;
-
-        [Required]
-        [StringLength(20)]
-        public string? Status {get;set;} // "Not Started", "In Progress", "Completed, "Pending"
+       
+        public ChallengeStatus ChallengeStatus {get;set;} 
 
         [NotMapped]
-        public string Slug =>
+        public string? Slug =>
             Title?.Replace(' ','-').ToLower();
 
-        /**[StringLength(20)]
-        public string? Reward {get;set;} // "Optional, e.g, "Buy new headphones", "Go for a trip"**/
-
-        //Navigation Properties
-       // public User Users {get;set;} = null!;
-        public Reward Rewards {get;set;}= null!;
+        
+     
         public Category Categories {get;set;} = null!;
-        public ICollection<Milestone> Milestones {get;set;} = null!;
-        public ICollection<Log> Logs {get;set;} = null!;
-         
+        public ICollection<UserChallenge> UserChallenges { get; set; } = new List<UserChallenge>();
+        public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
+
+
+    }
+    public enum ChallengeStatus
+    {
+        NotStarted,
+        InProgress,
+        Completed,
+        Pending
     }
 }

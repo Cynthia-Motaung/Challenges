@@ -4738,23 +4738,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\CHIBI\\.nuget\\packages\\": {},
+    "C:\\Users\\CAPACITI-JHB\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\CHIBI\\Desktop\\Challenges\\Challenges.csproj",
+      "projectUniqueName": "C:\\Users\\CAPACITI-JHB\\Desktop\\Challenges\\Challenges.csproj",
       "projectName": "Challenges",
-      "projectPath": "C:\\Users\\CHIBI\\Desktop\\Challenges\\Challenges.csproj",
-      "packagesPath": "C:\\Users\\CHIBI\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\CHIBI\\Desktop\\Challenges\\obj\\",
+      "projectPath": "C:\\Users\\CAPACITI-JHB\\Desktop\\Challenges\\Challenges.csproj",
+      "packagesPath": "C:\\Users\\CAPACITI-JHB\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\CAPACITI-JHB\\Desktop\\Challenges\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\CHIBI\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\CAPACITI-JHB\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4763,7 +4763,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4776,7 +4775,13 @@
         "warnAsError": [
           "NU1605"
         ]
-      }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -4818,7 +4823,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

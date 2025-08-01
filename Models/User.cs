@@ -1,31 +1,31 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Challenges.Models
 {
     public class User
     {
-        [StringLength(20)]
-        public string? FirstName {get;set;}
+        public int Id {get;set; }
 
-        [StringLength(20)]
-        public string? LastName {get;set;}
+        [Required]
+        [StringLength(20, ErrorMessage = "Username must be between 3 and 20 characters long.", MinimumLength = 3)]
+        public string Username {get;set;} = null!;
 
-        [NotMapped]
-        public string FullName => $"{FirstName} {LastName}";
-
-        [NotMapped]
-        public string Slug =>
-            FullName?.Replace(' ','-').ToLower();
+        [Required]
+        [StringLength(50)]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
+        public string Email {get;set;} = null!;
 
 
         public DateTime CreatedAt {get;set;} = DateTime.Now;
 
         public DateTime UpdatedAt {get;set;} = DateTime.Now;
 
-        public string? ProfilePicture {get;set;}
+        
         
         //Navigation Properties
-        public ICollection<Challenge> Challenges {get;set;} = null!;
+      
+        public Profile Profile {get;set;} = null!;
+        public ICollection<UserChallenge> UserChallenges {get;set;} = new List<UserChallenge> ();
     }
 }

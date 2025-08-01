@@ -6,21 +6,18 @@ namespace Challenges.Models
     public class Category
     {
         [Key]
-        public int CategoryId {get;set;}
+        public int Id {get;set;}
 
         [Required]
         [StringLength(20)]
-        public string CategoryName {get;set;}// unique
-
-        [StringLength(250)]
-        public string? Description {get;set;}//optional
+        public string CategoryName { get; set; } = null!;
 
         [NotMapped]
-        public string Slug =>
+        public string? Slug =>
             CategoryName?.Replace(' ','-').ToLower();
         
         //Navigation Properties
-        public ICollection<Challenge> Challenges {get;set;} = null!;
+        public ICollection<Challenge> Challenges {get;set;} = new List<Challenge>();
 
     }
 }
