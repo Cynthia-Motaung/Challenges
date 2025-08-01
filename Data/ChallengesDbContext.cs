@@ -16,6 +16,7 @@ namespace Challenges.Data
         public DbSet<User> Users {get;set;}
         public DbSet<UserChallenge> UserChallenges {get;set; }
         public DbSet<Progress> Progresses {get;set; }
+        public DbSet<Profile> Profiles { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
