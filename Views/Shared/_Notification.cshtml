@@ -1,0 +1,17 @@
+﻿@{
+    string alertClass = "";
+    string message = "";
+
+    if (TempData["SuccessMessage"] != null)
+    {
+        alertClass = "success";
+        message = TempData["SuccessMessage"].ToString();
+    }
+
+    if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert alert-@alertClass" role="alert">
+            @message
+        </div>
+    }
+}

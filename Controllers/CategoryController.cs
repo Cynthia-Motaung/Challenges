@@ -31,6 +31,7 @@ namespace Challenges.Controllers
             {
                 _context.Categories.Add(category);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Category created successfully!";
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -53,6 +54,7 @@ namespace Challenges.Controllers
             {
                 _context.Categories.Update(category);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Category updated successfully!";
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -76,6 +78,7 @@ namespace Challenges.Controllers
             {
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"{category.CategoryName} deleted successfully!";
             }
             return RedirectToAction("Index");
         }
