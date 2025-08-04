@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Challenge>
+@{
+    ViewData["Title"] = "Profiles";
+}
+<h2 class="fw-semibold text-secondary">Profiles</h2>
+<a asp-action="Create" class="btn btn-primary rounded-pill mr-1">Create New</a>
+<div class="container-fluid">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>FullName</th>
+                <th>Date Of Birth</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var challenge in Model)
+            {
+                <tr>
+                    <td>@challenge.Id</td>
+                    <td>@challenge.Categories?.CategoryName</td>
+                    <td>@challenge.Title</td>
+                    <td>@challenge.Description</td>
+                    <td>@challenge.StartDate.ToString("dd/MM/yyyy")</td>
+                    <td>@challenge.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td>@challenge.ChallengeStatus</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@challenge.Id" class="btn btn-outline-success btn-sm"><i class="bi bi-pencil-fill"></i> Edit</a>
+                        <a asp-action="Delete" asp-route-id="@challenge.Id" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

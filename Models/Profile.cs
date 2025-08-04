@@ -27,6 +27,6 @@ namespace Challenges.Models
         [NotMapped]
         public string? Slug =>
             FullName?.Replace(' ', '-').ToLower();
-        public User User { get; set; } = null!;
+        public User? User { get; set; }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Challenges.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Challenges.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Challenges.Controllers
 {
@@ -17,13 +18,13 @@ namespace Challenges.Controllers
         {
             var profiles = await _context.Profiles
                 .Include(p => p.User)
-                .OrderBy(p => p.FullName).ToListAsync();
+                .OrderBy(p => p.FirstName).ToListAsync();
             return View(profiles);
         }
 
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            var users = await _context.Users.OrderBy(u => u.Username).ToListAsync();
+            ViewBag.Users = new SelectList(_context.Users.ToList(), "Id", "Username");
             return View();
         }
 
@@ -43,7 +44,7 @@ namespace Challenges.Controllers
 
         public IActionResult Edit(int id)
         {
-            var users = _context.Users.OrderBy(u => u.Username).ToList();
+            ViewBag.Users = new SelectList(_context.Users.ToList(), "Id", "Username");
             var profile = _context.Profiles.Find(id);
             if (profile == null)
             {
@@ -52,6 +53,7 @@ namespace Challenges.Controllers
             return View(profile);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Edit(Profile profile)
         {
             if (ModelState.IsValid)
@@ -66,7 +68,7 @@ namespace Challenges.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var users = await _context.Users.OrderBy(u => u.Username).ToListAsync();
+            ViewBag.Users = new SelectList(_context.Users.ToList(), "Id", "Username");
             var profile = await _context.Profiles.FindAsync(id);
             if (profile == null)
             {
