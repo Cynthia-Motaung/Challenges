@@ -38,6 +38,7 @@ namespace Challenges.Controllers
             {
                 _context.Challenges.Add(challenge);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Challenge created successfully!";
                 return RedirectToAction("Index");
             }
             return View(challenge);
@@ -62,6 +63,7 @@ namespace Challenges.Controllers
             {
                 _context.Challenges.Update(challenge);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Challenge updated successfully!";
                 return RedirectToAction("Index");
             }
             return View(challenge);
@@ -87,6 +89,7 @@ namespace Challenges.Controllers
             {
                 _context.Challenges.Remove(challenge);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Challenge deleted successfully!";
             }
             return RedirectToAction("Index");
         }

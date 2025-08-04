@@ -27,12 +27,15 @@ namespace Challenges.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(User user)
         {
             if (ModelState.IsValid)
             {
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "User created successfully!";
                 return RedirectToAction("Index");
             }
             return View(user);
@@ -55,6 +58,7 @@ namespace Challenges.Controllers
             {
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "User updated successfully!";
                 return RedirectToAction("Index");
             }
             return View(user);
@@ -78,6 +82,7 @@ namespace Challenges.Controllers
             {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "User deleted successfully!";
             }
             return RedirectToAction("Index");
         }

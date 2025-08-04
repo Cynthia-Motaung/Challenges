@@ -34,6 +34,7 @@ namespace Challenges.Controllers
             {
                 _context.Profiles.Add(profile);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Profile created successfully!";
                 return RedirectToAction("Index");
             }
             return View(profile);
@@ -57,6 +58,7 @@ namespace Challenges.Controllers
             {
                 _context.Profiles.Update(profile);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Profile updated successfully!";
                 return RedirectToAction("Index");
             }
             return View(profile);
@@ -81,6 +83,7 @@ namespace Challenges.Controllers
             {
                 _context.Profiles.Remove(profile);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Profile deleted successfully!";
             }
             return RedirectToAction("Index");
         }

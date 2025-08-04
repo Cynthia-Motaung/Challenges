@@ -38,6 +38,7 @@ namespace Challenges.Controllers
             {
                 _context.Progresses.Add(progress);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Progress update created successfully!";
                 return RedirectToAction("Index");
             }
             return View(progress);
@@ -62,6 +63,7 @@ namespace Challenges.Controllers
             {
                 _context.Progresses.Update(progress);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Progress update updated successfully!";
                 return RedirectToAction("Index");
             }
             return View(progress);
@@ -76,6 +78,7 @@ namespace Challenges.Controllers
             }
             _context.Progresses.Remove(progress);
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Progress update deleted successfully!";
             return RedirectToAction("Index");
         }
 
