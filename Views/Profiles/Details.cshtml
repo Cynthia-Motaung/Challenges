@@ -1,17 +1,51 @@
-﻿@model Profile
+﻿@model Challenges.Models.Profile
 @{
-    ViewBag.Title = "Profile Details";
-
+    ViewData["Title"] = "Profile Details";
 }
 
-<h2 class="fw-semibold text-secondary">Profile Detail</h2>
-<div class="container-fluid">
-    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+<h2 class="fw-semibold text-secondary">Profile Details</h2>
 
-        <div class="row">
-            <div class="col-md-6">
-                
-            </div>
-            
-  
+<div class="container-fluid">
+    <div>
+        @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+        {
+            <img src="@Model.ProfilePicture" alt="Profile Picture of @Model.FullName" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;" />
+        }
+
+        <h4>@Model.FullName</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">
+                First Name
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+
+            <dt class="col-sm-3">
+                Last Name
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+
+            <dt class="col-sm-3">
+                Date of Birth
+            </dt>
+            <dd class="col-sm-9">
+                @Model.DateOfBirth.ToString("dd/MM/yyyy")
+            </dd>
+
+            <dt class="col-sm-3">
+                Username
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.User.Username)
+            </dd>
+        </dl>
+    </div>
+</div>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary rounded-pill">Edit Profile</a>
+    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">Back to List</a>
 </div>
