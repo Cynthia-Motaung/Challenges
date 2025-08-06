@@ -1,7 +1,8 @@
 ﻿using Challenges.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Challenges.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Challenges.Controllers
 {
@@ -18,36 +19,54 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Index()
         {
             var challenges = await _context.Challenges
-                .Include(c => c.Categories)
+                .Include(c => c.Category)
                 .OrderBy(c => c.Title)
                 .ToListAsync();
             return View(challenges);
         }
 
-
-        public async Task<IActionResult> Create()
+        [HttpGet]
+        public IActionResult Create()
         {
-            var categories = await _context.Categories.OrderBy(c => c.CategoryName).ToListAsync();
-            return View(categories);
+            // Change ViewData["Category"] to ViewData["Categories"]
+            ViewData["Categories"] = _context.Categories.ToList();
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(Challenge challenge)
         {
+            // We keep this check, but add a try-catch for the database operation
             if (ModelState.IsValid)
             {
-                _context.Challenges.Add(challenge);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Challenge created successfully!";
-                return RedirectToAction("Index");
+                try
+                {
+                    _context.Challenges.Add(challenge);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Challenge created successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateException ex)
+                {
+                    // This will catch errors during the database update.
+                    // Set a breakpoint here to inspect the 'ex' variable.
+                    // The InnerException often contains the most specific error message.
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator. Error: " + ex.InnerException?.Message);
+                }
             }
+
+            // Repopulate the dropdown if we end up here
+            ViewData["Categories"] = _context.Categories.ToList();
             return View(challenge);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
+            ViewData["Categories"] = _context.Categories.ToList();
             var challenge = await _context.Challenges
-                .Include(c => c.Categories)
+                .Include(c => c.Category)
                 .FirstOrDefaultAsync(c => c.Id == id);
             if (challenge == null)
             {
@@ -72,7 +91,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var challenge = await _context.Challenges
-                .Include(c => c.Categories)
+                .Include(c => c.Category)
                 .FirstOrDefaultAsync(c => c.Id == id);
             if (challenge == null)
             {
@@ -97,7 +116,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var challenge = await _context.Challenges
-                .Include(c => c.Categories)
+                .Include(c => c.Category)
                 .FirstOrDefaultAsync(c => c.Id == id);
             if (challenge == null)
             {

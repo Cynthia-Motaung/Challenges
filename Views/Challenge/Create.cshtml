@@ -1,1 +1,95 @@
-﻿
+﻿@model Challenge
+@{
+    ViewData["Title"] = "Create Challenge";
+
+}
+
+<h2 class="fw-semibold text-secondary">Create Challenge</h2>
+<div class="container-fluid">
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    <form asp-action="Create" method="post">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label mb-1">Title</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label mb-1">Category </label>
+                    <select asp-for="CategoryId" class="form-control" >
+                            @if (ViewData["Categories"] is List<Category> categories)
+                            {
+                                foreach(var category in categories)
+                                {
+                                    <option value="@category.Id">@category.CategoryName</option>
+                                }
+                            }
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label mb-1">Description</label>
+                    <textarea asp-for="Description" class="form-control" ></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StartDate" class="control-label mb-1">Start Date</label>
+                    <input asp-for="StartDate" class="form-control" type="date" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndDate" class="control-label mb-1">End Date</label>
+                    <input asp-for="EndDate" class="form-control" type="date" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label mb-1">Status</label>
+
+                    <div class="form-check">
+                        <input asp-for="ChallengeStatus"
+                               class="form-check-input"
+                               type="radio"
+                               id="ChallengeStatusNotStarted"
+                               value="@((int)ChallengeStatus.NotStarted)" />
+                        <label class="form-check-label" for="ChallengeStatusNotStarted">Not Started</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="ChallengeStatus"
+                               class="form-check-input"
+                               type="radio"
+                               id="ChallengeStatusInProgress"
+                               value="@((int)ChallengeStatus.InProgress)" />
+                        <label class="form-check-label" for="ChallengeStatusInProgress">In Progress</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="ChallengeStatus"
+                               class="form-check-input"
+                               type="radio"
+                               id="ChallengeStatusCompleted"
+                               value="@((int)ChallengeStatus.Completed)" />
+                        <label class="form-check-label" for="ChallengeStatusCompleted">Completed</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="ChallengeStatus"
+                               class="form-check-input"
+                               type="radio"
+                               id="ChallengeStatusPending"
+                               value="@((int)ChallengeStatus.Pending)" />
+                        <label class="form-check-label" for="ChallengeStatusPending">Pending</label>
+                    </div>
+
+                    <span asp-validation-for="ChallengeStatus" class="text-danger"></span>
+                </div>
+                
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary rounded-pill">Save</button>
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
