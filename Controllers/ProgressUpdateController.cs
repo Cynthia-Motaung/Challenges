@@ -1,6 +1,7 @@
 ﻿using Challenges.Data;
 using Challenges.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering; // Add this using statement
 using Microsoft.EntityFrameworkCore;
 
 namespace Challenges.Controllers
@@ -14,6 +15,7 @@ namespace Challenges.Controllers
             _context = context;
         }
 
+        // Unchanged...
         public async Task<IActionResult> Index()
         {
             var progressUpdates = await _context.Progresses
@@ -24,10 +26,11 @@ namespace Challenges.Controllers
             return View(progressUpdates);
         }
 
+        // MODIFIED: Pass lists to the view using ViewData
         public async Task<IActionResult> Create()
         {
-            var challenges = await _context.Challenges.OrderBy(c => c.Title).ToListAsync();
-            var users = await _context.Users.OrderBy(u => u.Username).ToListAsync();
+            ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title");
+            ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username");
             return View();
         }
 
@@ -41,18 +44,25 @@ namespace Challenges.Controllers
                 TempData["SuccessMessage"] = "Progress update created successfully!";
                 return RedirectToAction("Index");
             }
+            // MODIFIED: Repopulate dropdowns if validation fails
+            ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title", progress.ChallengeId);
+            ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username", progress.UserId);
             return View(progress);
         }
+
+        // MODIFIED: Pass lists to the view using ViewData
         public async Task<IActionResult> Edit(int id)
         {
             var progress = await _context.Progresses
-                .Include(p => p.Challenge)
-                .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
+
             if (progress == null)
             {
                 return NotFound();
             }
+
+            ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title", progress.ChallengeId);
+            ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username", progress.UserId);
             return View(progress);
         }
 
@@ -66,35 +76,40 @@ namespace Challenges.Controllers
                 TempData["SuccessMessage"] = "Progress update updated successfully!";
                 return RedirectToAction("Index");
             }
+            // MODIFIED: Repopulate dropdowns if validation fails
+            ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title", progress.ChallengeId);
+            ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username", progress.UserId);
             return View(progress);
         }
 
+        // Unchanged...
         public async Task<IActionResult> Delete(int id)
         {
-            var progress = await _context.Progresses.FindAsync(id);
+            var progress = await _context.Progresses
+                .Include(p => p.Challenge)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (progress == null)
             {
                 return NotFound();
             }
-            _context.Progresses.Remove(progress);
-            await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Progress update deleted successfully!";
-            return RedirectToAction("Index");
+            return View(progress);
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var progress = await _context.Progresses.FindAsync(id);
-            if (progress == null)
+            if (progress != null)
             {
-                return NotFound();
+                _context.Progresses.Remove(progress);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Progress update deleted successfully!";
             }
-            _context.Progresses.Remove(progress);
-            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
+        // Unchanged...
         public async Task<IActionResult> Details(int id)
         {
             var progress = await _context.Progresses

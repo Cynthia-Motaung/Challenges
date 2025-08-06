@@ -1,0 +1,26 @@
+﻿@model Challenges.Models.Progress
+
+@{
+    ViewBag.Title = "Confirm Deletion";
+}
+
+<h2 class="fw-semibold text-secondary">Confirm Deletion</h2>
+
+<div class="alert alert-danger" role="alert">
+   <div class="row">
+       
+        <div class="col-md-6">
+            
+            <form asp-action="Delete" method="post">
+                
+                <input type="hidden" asp-for="Id" /> 
+                <p>Are you sure you want to delete the progress update for <strong class="text-danger">@Model.User?.Username</strong> on challenge <strong class="text-danger">@Model.Challenge?.Title</strong>?</p>
+
+                <div class="mt-3">
+                    
+                    <button type="submit" class="btn btn-danger rounded-pill">Yes, Delete</button> 
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">No, Cancel</a> 
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@model Challenges.Models.Progress
+
+@{
+    ViewData["Title"] = "Progress Update Details";
+}
+
+<h2 class="fw-semibold text-secondary">Progress Update Details</h2>
+
+<div class="container-fluid">
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">User</dt>
+            <dd class="col-sm-9">@Model.User?.Username</dd>
+
+            <dt class="col-sm-3">Challenge</dt>
+            <dd class="col-sm-9">@Model.Challenge?.Title</dd>
+
+            <dt class="col-sm-3">Progress Percentage</dt>
+            <dd class="col-sm-9">@Model.ProgressPercentage%</dd>
+
+            <dt class="col-sm-3">Notes</dt>
+            <dd class="col-sm-9">@Model.ProgressDetails</dd>
+
+            <dt class="col-sm-3">Date Created</dt>
+            <dd class="col-sm-9">@Model.CreatedAt.ToString("F")</dd>
+        </dl>
+    </div>
+</div>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary rounded-pill">Edit</a>
+    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">Back to List</a>
+</div>

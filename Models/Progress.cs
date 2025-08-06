@@ -15,8 +15,8 @@ namespace Challenges.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         // Navigation Properties
-        public User User { get; set; } = null!;
-        public Challenge Challenge { get; set; } = null!;
+        public User? User { get; set; }
+        public Challenge? Challenge { get; set; } 
         // Additional properties can be added here, such as progress percentage, status, etc.
         public double ProgressPercentage { get; set; } = 0.0;
     }

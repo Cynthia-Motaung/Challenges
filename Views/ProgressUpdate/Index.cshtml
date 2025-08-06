@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Challenges.Models.Progress>
+
+@{
+    ViewData["Title"] = "Progress Updates";
+}
+
+<h2 class="fw-semibold text-secondary">Progress Updates</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary rounded-pill"><i class="bi bi-plus-lg"></i> New Update</a>
+</p>
+
+<div class="container-fluid">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Challenge</th>
+                <th>Progress (%)</th>
+                <th>Notes</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.User?.Username</td>
+                    <td>@item.Challenge?.Title</td>
+                    <td>@item.ProgressPercentage</td>
+                    <td>@item.ProgressDetails</td>
+                    <td>@item.CreatedAt.ToString("g")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm"><i class="bi bi-pencil-fill"></i> Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm"><i class="bi bi-info-circle"></i> Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
