@@ -5,6 +5,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContextPool<ChallengesDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("ChallengesConnection")));
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true; 
+    options.AppendTrailingSlash = true; 
+});
 
 
 builder.Services.AddControllersWithViews();
