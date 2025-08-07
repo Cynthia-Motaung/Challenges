@@ -41,7 +41,6 @@ namespace Challenges.Controllers
             return View(profile);
         }
 
-
         public IActionResult Edit(int id)
         {
             ViewBag.Users = new SelectList(_context.Users.ToList(), "Id", "Username");

@@ -12,17 +12,17 @@ namespace Challenges.Models
 
         [Required]
         [StringLength(100)]
-        public string Title {get;set;}
+        public string? Title {get;set;}
 
         [Required]
         [StringLength(250)]
-        public string Description {get;set;}
+        public string? Description {get;set;}
 
         public bool IsUnlocked {get;set;}
 
 
         [NotMapped]
-        public string Slug =>
+        public string? Slug =>
             Title?.Replace(' ','-').ToLower();
             
         public Challenge Challenges {get;set;} = null!;

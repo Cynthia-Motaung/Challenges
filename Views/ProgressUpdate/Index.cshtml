@@ -1,15 +1,12 @@
-﻿@model IEnumerable<Challenges.Models.Progress>
-
+﻿@model IEnumerable<Progress>
 @{
     ViewData["Title"] = "Progress Updates";
 }
 
 <h2 class="fw-semibold text-secondary">Progress Updates</h2>
-
 <p>
     <a asp-action="Create" class="btn btn-outline-primary rounded-pill"><i class="bi bi-plus-lg"></i> New Update</a>
 </p>
-
 <div class="container-fluid">
     <table class="table table-striped table-hover">
         <thead>

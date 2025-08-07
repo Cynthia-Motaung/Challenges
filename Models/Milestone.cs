@@ -12,30 +12,20 @@ namespace Challenges.Models
 
         [Required]
         [StringLength(50)]
-        public string Title {get;set;}
-
-        /**[Required]
-        [StringLength(20)]
-        public string Status {get;set;} // "Not Started","In Progress", "Completed"**/
-
-        /**public DateTime CreatedAt {get;set;} = DateTime.Now;
-
-        public DateTime UpdatedAt {get;set;} = DateTime.Now;**/
+        public string? Title {get;set;}
 
         public bool IsCompleted {get;set;}
 
         [StringLength(250)]
-        public string? Description {get;set;}//optional
+        public string? Description {get;set;}
 
         public DateTime? DueDate {get;set;}
 
         [NotMapped]
-        public string Slug =>
+        public string? Slug =>
             Title?.Replace(' ','-').ToLower();
     
         //Navigation Properties
         public Challenge Challenges {get;set;} = null!;
-
-
     }
 }

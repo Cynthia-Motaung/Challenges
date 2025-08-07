@@ -16,13 +16,11 @@ namespace Challenges.Models
         public string? LastName { get; set; }
 
         public DateOnly DateOfBirth { get; set; }
-        public string? ProfilePicture { get; set; }
 
+        public string? ProfilePicture { get; set; }
 
         [NotMapped]
         public string FullName => $"{FirstName} {LastName}";
-
-
 
         [NotMapped]
         public string? Slug =>

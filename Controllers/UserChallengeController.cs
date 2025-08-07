@@ -15,7 +15,6 @@ namespace Challenges.Controllers
             _context = context;
         }
 
-        // GET: Lists all assignments
         public async Task<IActionResult> Index()
         {
             var userChallenges = await _context.UserChallenges
@@ -27,7 +26,6 @@ namespace Challenges.Controllers
             return View(userChallenges);
         }
 
-        // GET: Shows the form to assign a user to a challenge
         public async Task<IActionResult> Assign()
         {
             ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username");
@@ -35,12 +33,9 @@ namespace Challenges.Controllers
             return View();
         }
 
-        // POST: Processes the new assignment
         [HttpPost]
         public async Task<IActionResult> Assign(UserChallenge userChallenge)
         {
-            // The model binder will create the UserChallenge with UserId and ChallengeId
-            // The AssignedDate is already set by default in the model.
 
             if (ModelState.IsValid)
             {
@@ -53,19 +48,15 @@ namespace Challenges.Controllers
                 }
                 catch (DbUpdateException)
                 {
-                    // This likely means the user is already assigned to this challenge,
-                    // which violates the primary key constraint.
                     ModelState.AddModelError("", "This user is already assigned to this challenge.");
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username", userChallenge.UserId);
             ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title", userChallenge.ChallengeId);
             return View(userChallenge);
         }
 
-        // POST: Deletes (un-assigns) a user from a challenge
         [HttpPost]
         public async Task<IActionResult> Delete(int userId, int challengeId)
         {

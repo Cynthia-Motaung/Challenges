@@ -41,7 +41,6 @@ namespace Challenges.Data
             .HasForeignKey<Profile>(p => p.UserId)
             .OnDelete(DeleteBehavior.ClientSetNull);
 
-
             //User Challenge many-to-many relationship
             modelBuilder.Entity<UserChallenge>()
                 .HasKey(uc => new { uc.UserId, uc.ChallengeId });

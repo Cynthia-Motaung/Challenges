@@ -31,13 +31,9 @@ namespace Challenges.Models
         public string? Slug =>
             Title?.Replace(' ', '-').ToLower();
 
-
-        // Change this property to be nullable
         public Category? Category { get; set; }
         public ICollection<UserChallenge> UserChallenges { get; set; } = new List<UserChallenge>();
         public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
-
-
     }
     public enum ChallengeStatus
     {

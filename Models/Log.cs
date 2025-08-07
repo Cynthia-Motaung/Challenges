@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Challenges.Models
 {
@@ -17,8 +16,6 @@ namespace Challenges.Models
         public string? Notes {get;set;}
 
         public DateTime UpdatedAt {get;set;} = DateTime.Now;
-
-        
 
         public decimal? Progress {get;set;} //Optional progress metric
 

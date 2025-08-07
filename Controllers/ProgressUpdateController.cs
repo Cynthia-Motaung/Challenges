@@ -1,7 +1,7 @@
 ﻿using Challenges.Data;
 using Challenges.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering; // Add this using statement
+using Microsoft.AspNetCore.Mvc.Rendering; 
 using Microsoft.EntityFrameworkCore;
 
 namespace Challenges.Controllers
@@ -15,7 +15,6 @@ namespace Challenges.Controllers
             _context = context;
         }
 
-        // Unchanged...
         public async Task<IActionResult> Index()
         {
             var progressUpdates = await _context.Progresses
@@ -26,7 +25,6 @@ namespace Challenges.Controllers
             return View(progressUpdates);
         }
 
-        // MODIFIED: Pass lists to the view using ViewData
         public async Task<IActionResult> Create()
         {
             ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title");
@@ -44,13 +42,12 @@ namespace Challenges.Controllers
                 TempData["SuccessMessage"] = "Progress update created successfully!";
                 return RedirectToAction("Index");
             }
-            // MODIFIED: Repopulate dropdowns if validation fails
+            
             ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title", progress.ChallengeId);
             ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username", progress.UserId);
             return View(progress);
         }
 
-        // MODIFIED: Pass lists to the view using ViewData
         public async Task<IActionResult> Edit(int id)
         {
             var progress = await _context.Progresses
@@ -76,13 +73,12 @@ namespace Challenges.Controllers
                 TempData["SuccessMessage"] = "Progress update updated successfully!";
                 return RedirectToAction("Index");
             }
-            // MODIFIED: Repopulate dropdowns if validation fails
+            
             ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title", progress.ChallengeId);
             ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username", progress.UserId);
             return View(progress);
         }
 
-        // Unchanged...
         public async Task<IActionResult> Delete(int id)
         {
             var progress = await _context.Progresses
@@ -109,7 +105,6 @@ namespace Challenges.Controllers
             return RedirectToAction("Index");
         }
 
-        // Unchanged...
         public async Task<IActionResult> Details(int id)
         {
             var progress = await _context.Progresses
