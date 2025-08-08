@@ -57,7 +57,7 @@ This project serves as a practical demonstration of the following key concepts.
 The following diagram illustrates the database structure for the basic application.
 
 
-![Alt text for your image](/wwwroot/challenges schema.png)
+![A diagram of the challenge tracker schema](./.assets/challenges-schema.png)
 
 ---
 
