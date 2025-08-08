@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContextPool<ChallengesDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("ChallengesConnection")));
+builder.Services.AddDbContextPool<ChallengesDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("ChallengesConnection")));
 builder.Services.AddRouting(options =>
 {
     options.LowercaseUrls = true; 
