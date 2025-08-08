@@ -1,9 +1,67 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Control Panel";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-   
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4">Application Hub</h1>
+    <p class="lead text-muted">A central panel to manage all data for the Challenge Tracker.</p>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 text-center shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <i class="fas fa-flag-checkered fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Manage Challenges</h5>
+                <p class="card-text mt-auto">Create, view, edit, and delete the master list of all available challenges.</p>
+            </div>
+            <div class="card-footer bg-white border-0 p-3">
+                <a asp-controller="Challenge" asp-action="Index" class="btn btn-outline-primary w-100 mb-2">View All</a>
+                <a asp-controller="Challenge" asp-action="Create" class="btn btn-primary w-100">Create New</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 text-center shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <i class="fas fa-users fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Manage Users</h5>
+                <p class="card-text mt-auto">Add new users and manage existing user accounts and their profiles.</p>
+            </div>
+            <div class="card-footer bg-white border-0 p-3">
+                <a asp-controller="Users" asp-action="Index" class="btn btn-outline-success w-100 mb-2">View All</a>
+                <a asp-controller="Users" asp-action="Create" class="btn btn-success w-100">Create New</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 text-center shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <i class="fas fa-tags fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Manage Categories</h5>
+                <p class="card-text mt-auto">Organize challenges by creating and managing different categories.</p>
+            </div>
+            <div class="card-footer bg-white border-0 p-3">
+                <a asp-controller="Category" asp-action="Index" class="btn btn-outline-info w-100 mb-2">View All</a>
+                <a asp-controller="Category" asp-action="Create" class="btn btn-info text-white w-100">Create New</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 text-center shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <i class="fas fa-tasks fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Assign & Track</h5>
+                <p class="card-text mt-auto">Assign challenges to users and view all progress updates logged in the system.</p>
+            </div>
+            <div class="card-footer bg-white border-0 p-3">
+                <a asp-controller="UserChallenge" asp-action="Assign" class="btn btn-warning text-white w-100 mb-2">Assign Challenge</a>
+                <a asp-controller="ProgressUpdate" asp-action="Index" class="btn btn-outline-secondary w-100">View Progress</a>
+            </div>
+        </div>
+    </div>
 </div>

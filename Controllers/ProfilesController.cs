@@ -17,6 +17,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Index()
         {
             var profiles = await _context.Profiles
+                .AsNoTracking()
                 .Include(p => p.User)
                 .OrderBy(p => p.FirstName).ToListAsync();
             return View(profiles);
@@ -93,6 +94,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var profile = await _context.Profiles
+                .AsNoTracking()
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (profile == null)

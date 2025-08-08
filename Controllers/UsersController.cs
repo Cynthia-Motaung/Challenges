@@ -17,6 +17,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Index()
         {
             var users = await _context.Users
+                .AsNoTracking()
                 .OrderBy(u => u.Username)
                 .ToListAsync();
             return View(users);

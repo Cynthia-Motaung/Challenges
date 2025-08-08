@@ -18,6 +18,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Index()
         {
             var progressUpdates = await _context.Progresses
+                .AsNoTracking()
                 .Include(p => p.Challenge)
                 .Include(p => p.User)
                 .OrderByDescending(p => p.CreatedAt)
@@ -108,6 +109,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var progress = await _context.Progresses
+                .AsNoTracking()
                 .Include(p => p.Challenge)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.Id == id);

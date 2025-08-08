@@ -18,6 +18,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Index()
         {
             var userChallenges = await _context.UserChallenges
+                .AsNoTracking()
                 .Include(uc => uc.User)
                 .Include(uc => uc.Challenge)
                 .OrderBy(uc => uc.User.Username)

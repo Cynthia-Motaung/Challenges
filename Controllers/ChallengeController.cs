@@ -19,6 +19,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Index()
         {
             var challenges = await _context.Challenges
+                .AsNoTracking()
                 .Include(c => c.Category)
                 .OrderBy(c => c.Title)
                 .ToListAsync();
@@ -109,6 +110,7 @@ namespace Challenges.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var challenge = await _context.Challenges
+                .AsNoTracking()
                 .Include(c => c.Category)
                 .FirstOrDefaultAsync(c => c.Id == id);
             if (challenge == null)

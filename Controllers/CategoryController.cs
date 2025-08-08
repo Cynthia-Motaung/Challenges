@@ -15,7 +15,7 @@ namespace Challenges.Controllers
         
         public async Task<IActionResult> Index()
         {
-            var categories = await _context.Categories.OrderBy(c => c.CategoryName).ToListAsync();
+            var categories = await _context.Categories.AsNoTracking().OrderBy(c => c.CategoryName).ToListAsync();
             return View(categories);
         }
 
