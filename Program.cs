@@ -10,8 +10,6 @@ builder.Services.AddRouting(options =>
     options.LowercaseUrls = true; 
     options.AppendTrailingSlash = true; 
 });
-
-
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

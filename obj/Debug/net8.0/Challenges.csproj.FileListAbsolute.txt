@@ -199,6 +199,8 @@ C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\Microsoft.Extensions.L
 C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
 C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\Npgsql.dll
+C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\System.CodeDom.dll
 C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\System.Composition.Convention.dll
@@ -301,5 +303,3 @@ C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\refint\Challenges.dll
 C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\Challenges.pdb
 C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\Challenges.genruntimeconfig.cache
 C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\ref\Challenges.dll
-C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\Npgsql.dll
-C:\Users\CAPACITI-JHB\Desktop\Challenges\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
