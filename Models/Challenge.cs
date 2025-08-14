@@ -1,21 +1,15 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Challenges.Models
 {
     public class Challenge
     {
-        [Key]
         public int Id { get; set; }
 
         public int CategoryId { get; set; }
 
-        [Required]
-        [StringLength(50)]
+       
         public string Title { get; set; } = null!;
 
-        [Required]
-        [StringLength(250)]
+        
         public string Description { get; set; } = null!;
 
         public DateOnly StartDate { get; set; }
@@ -27,7 +21,6 @@ namespace Challenges.Models
 
         public ChallengeStatus ChallengeStatus { get; set; }
 
-        [NotMapped]
         public string? Slug =>
             Title?.Replace(' ', '-').ToLower();
 

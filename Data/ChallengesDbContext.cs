@@ -21,25 +21,150 @@ namespace Challenges.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Category entity configuration
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+
+                entity.Property(c => c.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.HasIndex(c => c.CategoryName)
+                    .IsUnique();
+
+                // NotMapped property for Slug
+                entity.Ignore(c => c.Slug);
+            });
+
             //Challenge entity configuration
-            modelBuilder.Entity<Category>()
-                .HasIndex(c => c.CategoryName)
-                .IsUnique();
+            modelBuilder.Entity<Challenge>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+
+                entity.Property(c => c.Title)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(c => c.Description)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.Property(c => c.StartDate)
+                    .IsRequired();
+
+                entity.Property(c => c.EndDate)
+                    .IsRequired();
+
+                entity.Property(c => c.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+
+                // NotMapped property for Slug
+                entity.Ignore(c => c.Slug);
+
+                entity.HasOne(c => c.Category)
+                    .WithMany(cat => cat.Challenges)
+                    .HasForeignKey(c => c.CategoryId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
 
             //User entity configuration
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.Id);
 
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
+                entity.Property(u => u.Username)
+                    .IsRequired()
+                    .HasMaxLength(20);
 
-            modelBuilder.Entity<User>()
-            .HasOne(u => u.Profile)
-            .WithOne(p => p.User)
-            .HasForeignKey<Profile>(p => p.UserId)
-            .OnDelete(DeleteBehavior.ClientSetNull);
+                entity.Property(u => u.Email)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasIndex(u => u.Email)
+                    .IsUnique();
+
+                entity.HasIndex(u => u.Username)
+                    .IsUnique();
+
+                entity.Property(u => u.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+
+                entity.Property(u => u.UpdatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+
+                // NotMapped properties
+
+                entity.Ignore(u => u.Profile);
+                entity.Ignore(u => u.UserChallenges);
+
+                entity.HasOne(u => u.Profile)
+                    .WithOne(p => p.User)
+                    .HasForeignKey<Profile>(p => p.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            //Profile entity configuration
+            modelBuilder.Entity<Profile>(entity =>
+            {
+                entity.HasKey(p => p.Id);
+
+                entity.Property(p => p.UserId)
+                    .IsRequired();
+
+               entity.Property(p => p.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(p => p.LastName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(p => p.DateOfBirth)
+                    .IsRequired();
+
+                entity.Property(p => p.ProfilePicture)
+                    .HasMaxLength(100);
+
+                // NotMapped properties
+                entity.Ignore(p => p.FullName);
+                entity.Ignore(p => p.Slug);
+                
+                entity.HasOne(p => p.User)
+                    .WithOne(u => u.Profile)
+                    .HasForeignKey<Profile>(p => p.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            });
+
+            modelBuilder.Entity<Progress>(entity =>
+            {
+                entity.HasKey(p => p.Id);
+
+                entity.Property(p => p.UserId)
+                    .IsRequired();
+
+                entity.Property(p => p.ChallengeId)
+                    .IsRequired();
+
+                entity.Property(p => p.ProgressPercentage)
+                    .IsRequired()
+                    .HasPrecision(5, 2); // Precision for percentage values
+
+                entity.Property(p => p.ProgressDetails)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.Property(p => p.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+
+                entity.Property(p => p.UpdatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+
+                
+            });
+
 
             //User Challenge many-to-many relationship
             modelBuilder.Entity<UserChallenge>()
