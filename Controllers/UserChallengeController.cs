@@ -1,58 +1,57 @@
 ﻿using Challenges.Data;
 using Challenges.Models;
-using Challenges.Models.DTOs; // New using directive for DTOs
+using Challenges.Models.DTOs;
+using Challenges.Interfaces; // New using directive for IUnitOfWork
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper; // Required for AutoMapper
+using AutoMapper;
 
 namespace Challenges.Controllers
 {
     public class UserController : Controller
     {
-        private readonly ChallengesDbContext _context;
-        private readonly IMapper _mapper; // Inject AutoMapper
+        private readonly IUnitOfWork _unitOfWork; // Inject IUnitOfWork
+        private readonly IMapper _mapper;
 
-        public UserController(ChallengesDbContext context, IMapper mapper) // Constructor injection for IMapper
+        // Update constructor to inject IUnitOfWork
+        public UserController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            // Retrieve all users, order them, and project directly into UserIndexDto to send only necessary data to the view.
-            var users = await _context.Users
-                .AsNoTracking()
-                .OrderBy(u => u.Username)
-                .Select(u => _mapper.Map<UserIndexDto>(u)) // Map User entity to UserIndexDto
-                .ToListAsync();
-            return View(users);
+            // Use _unitOfWork.Users to access the User repository
+            var users = await _unitOfWork.Users
+                .GetAllAsync(); // GetAllAsync already includes AsNoTracking()
+
+            var userDtos = _mapper.Map<IEnumerable<UserIndexDto>>(users.OrderBy(u => u.Username));
+            return View(userDtos);
         }
 
         // GET: Users/Create
         public IActionResult Create()
         {
-            return View(); // The Create view will now expect a UserCreateDto
+            return View();
         }
 
         // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // Accept UserCreateDto instead of the full User model
         public async Task<IActionResult> Create(UserCreateDto userDto)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Map the DTO back to the User entity
                     var user = _mapper.Map<User>(userDto);
-                    user.CreatedAt = DateTime.Now; // Set CreatedAt timestamp here
-                    user.UpdatedAt = DateTime.Now; // Set UpdatedAt timestamp here
+                    user.CreatedAt = DateTime.Now;
+                    user.UpdatedAt = DateTime.Now;
 
-                    _context.Users.Add(user);
-                    await _context.SaveChangesAsync();
+                    await _unitOfWork.Users.AddAsync(user); // Use repository to add
+                    await _unitOfWork.CompleteAsync(); // Save changes via Unit of Work
                     TempData["SuccessMessage"] = "User created successfully!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -63,19 +62,18 @@ namespace Challenges.Controllers
                         "see your system administrator. Error: " + ex.InnerException?.Message);
                 }
             }
-            // If ModelState is invalid, return the DTO to the view to preserve input
             return View(userDto);
         }
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            // Use repository to get user by ID
+            var user = await _unitOfWork.Users.GetByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-            // Map the User entity to UserEditDto for display in the edit form
             var userDto = _mapper.Map<UserEditDto>(user);
             return View(userDto);
         }
@@ -83,38 +81,45 @@ namespace Challenges.Controllers
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // Accept UserEditDto as input
         public async Task<IActionResult> Edit(int id, UserEditDto userDto)
         {
-            if (id != userDto.Id) // Ensure the DTO ID matches the route ID
+            if (id != userDto.Id)
             {
                 return NotFound();
             }
 
-            // Retrieve the existing user entity from the database
-            var userToUpdate = await _context.Users.FindAsync(id);
+            var userToUpdate = await _unitOfWork.Users.GetByIdAsync(id); // Get existing user
 
             if (userToUpdate == null)
             {
+                // This scenario could indicate a concurrency conflict if the item was deleted
+                // by another user between the GET and POST, or if the ID was invalid.
+                // For optimistic concurrency, EF Core will handle DbUpdateConcurrencyException.
+                // If it's truly not found, return NotFound.
                 return NotFound();
             }
+
+            // Ensure the entity is being tracked by the context for updates
+            // If GetByIdAsync tracked it, then mapping onto it will mark it as modified.
+            // If it wasn't tracked, we need to attach it and mark as modified or use Update.
+            // The current GenericRepository.Update(T entity) handles setting state to modified.
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Map the DTO properties onto the existing entity
                     _mapper.Map(userDto, userToUpdate);
-                    userToUpdate.UpdatedAt = DateTime.Now; // Update UpdatedAt timestamp
+                    userToUpdate.UpdatedAt = DateTime.Now;
 
-                    _context.Entry(userToUpdate).State = EntityState.Modified; // Ensure EF tracks changes
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Users.Update(userToUpdate); // Use repository to update
+                    await _unitOfWork.CompleteAsync(); // Save changes
                     TempData["SuccessMessage"] = "User updated successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(userDto.Id)) // Use DTO ID for existence check
+                    // Use repository's ExistsAsync for existence check
+                    if (!await _unitOfWork.Users.ExistsAsync(u => u.Id == userDto.Id))
                     {
                         return NotFound();
                     }
@@ -134,16 +139,13 @@ namespace Challenges.Controllers
                         "see your system administrator. Error: " + ex.InnerException?.Message);
                 }
             }
-            // If ModelState is invalid, return the DTO to the view to preserve input
             return View(userDto);
         }
 
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            // For delete, you might still want to display the full User or a UserDetailsDto
-            // For simplicity, keeping it as User for now, but could be refactored to UserDetailsDto
-            var user = await _context.Users.FindAsync(id);
+            var user = await _unitOfWork.Users.GetByIdAsync(id); // Use repository to find
             if (user == null)
             {
                 return NotFound();
@@ -156,7 +158,7 @@ namespace Challenges.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _unitOfWork.Users.GetByIdAsync(id); // Use repository to find
             if (user == null)
             {
                 return NotFound();
@@ -164,14 +166,15 @@ namespace Challenges.Controllers
 
             try
             {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
+                _unitOfWork.Users.Remove(user); // Use repository to remove
+                await _unitOfWork.CompleteAsync(); // Save changes
                 TempData["SuccessMessage"] = "User deleted successfully!";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(user.Id))
+                // Use repository's ExistsAsync for existence check
+                if (!await _unitOfWork.Users.ExistsAsync(u => u.Id == user.Id))
                 {
                     TempData["ErrorMessage"] = "The user was already deleted by another user.";
                     return RedirectToAction(nameof(Index));
@@ -196,24 +199,26 @@ namespace Challenges.Controllers
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            // Project directly into UserDetailsDto for read-only details view
-            var userDto = await _context.Users
-                .AsNoTracking()
-                .Where(u => u.Id == id)
-                .Select(u => _mapper.Map<UserDetailsDto>(u)) // Map User entity to UserDetailsDto
-                .FirstOrDefaultAsync();
+            // Use FindAsync with a predicate and map to DTO
+            var user = await _unitOfWork.Users
+                .FindAsync(u => u.Id == id);
 
-            if (userDto == null)
+            // FindAsync returns IEnumerable, so get the first or default
+            var userEntity = user.FirstOrDefault();
+
+            if (userEntity == null)
             {
                 return NotFound();
             }
+
+            var userDto = _mapper.Map<UserDetailsDto>(userEntity);
             return View(userDto);
         }
 
-        // Helper method to check if a user exists
-        private bool UserExists(int id)
+        // Helper method to check if a user exists (now uses repository)
+        private async Task<bool> UserExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return await _unitOfWork.Users.ExistsAsync(e => e.Id == id);
         }
     }
 }

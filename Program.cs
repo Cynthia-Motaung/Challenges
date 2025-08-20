@@ -1,4 +1,6 @@
 using Challenges.Data;
+using Challenges.Interfaces; // New using directive for Interfaces
+using Challenges.Repositories; // New using directive for Repositories
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,16 +8,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContextPool<ChallengesDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("ChallengesConnection")));
+
+// Register the Unit of Work and Generic Repository
+// Option 1: Register GenericRepository for direct use (less common with UnitOfWork)
+// builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+// Option 2: Register UnitOfWork (preferred when using a Unit of Work pattern)
+builder.Services.AddScoped<IUnitOfWork, IUnitOfWork>();
+
 builder.Services.AddRouting(options =>
 {
-    options.LowercaseUrls = true; 
-    options.AppendTrailingSlash = true; 
+    options.LowercaseUrls = true;
+    options.AppendTrailingSlash = true;
 });
 
 
 builder.Services.AddControllersWithViews();
 // In Program.cs, after builder.Services.AddControllersWithViews();
-builder.Services.AddAutoMapper(typeof(Program)); // This will find MappingProfile
+builder.Services.AddAutoMapper(typeof(Program)); 
 
 var app = builder.Build();
 
