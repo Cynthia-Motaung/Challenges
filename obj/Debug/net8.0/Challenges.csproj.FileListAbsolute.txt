@@ -337,3 +337,4 @@ C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\refint\Challenges.dll
 C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\Challenges.pdb
 C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\Challenges.genruntimeconfig.cache
 C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\ref\Challenges.dll
+C:\Users\CAPACITI-JHB\Desktop\Challenges\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
