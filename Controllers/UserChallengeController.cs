@@ -1,105 +1,179 @@
 ﻿using Challenges.Data;
 using Challenges.Models;
+using Challenges.Models.DTOs; // New using directive for DTOs
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper; // Required for AutoMapper
 
 namespace Challenges.Controllers
 {
-    public class UserChallengeController : Controller
+    public class UserController : Controller
     {
         private readonly ChallengesDbContext _context;
+        private readonly IMapper _mapper; // Inject AutoMapper
 
-        public UserChallengeController(ChallengesDbContext context)
+        public UserController(ChallengesDbContext context, IMapper mapper) // Constructor injection for IMapper
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        // GET: UserChallenges
+        // GET: Users
         public async Task<IActionResult> Index()
         {
-            // Eager load User and Challenge, order by User and then Challenge title for display
-            var userChallenges = await _context.UserChallenges
+            // Retrieve all users, order them, and project directly into UserIndexDto to send only necessary data to the view.
+            var users = await _context.Users
                 .AsNoTracking()
-                .Include(uc => uc.User)
-                .Include(uc => uc.Challenge)
-                .OrderBy(uc => uc.User.Username)
-                .ThenBy(uc => uc.Challenge.Title)
+                .OrderBy(u => u.Username)
+                .Select(u => _mapper.Map<UserIndexDto>(u)) // Map User entity to UserIndexDto
                 .ToListAsync();
-            return View(userChallenges);
+            return View(users);
         }
 
-        // GET: UserChallenges/Assign
-        public async Task<IActionResult> Assign()
+        // GET: Users/Create
+        public IActionResult Create()
         {
-            // Provide Users and Challenges for dropdown lists
-            ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username");
-            ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title");
-            return View();
+            return View(); // The Create view will now expect a UserCreateDto
         }
 
-        // POST: UserChallenges/Assign
+        // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Assign([Bind("UserId,ChallengeId,AssignedDate")] UserChallenge userChallenge)
+        // Accept UserCreateDto instead of the full User model
+        public async Task<IActionResult> Create(UserCreateDto userDto)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.UserChallenges.Add(userChallenge);
+                    // Map the DTO back to the User entity
+                    var user = _mapper.Map<User>(userDto);
+                    user.CreatedAt = DateTime.Now; // Set CreatedAt timestamp here
+                    user.UpdatedAt = DateTime.Now; // Set UpdatedAt timestamp here
+
+                    _context.Users.Add(user);
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Challenge assigned successfully!";
+                    TempData["SuccessMessage"] = "User created successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException ex)
                 {
-                    // Specific handling for unique constraint violation (e.g., user already assigned to challenge)
-                    if (ex.InnerException?.Message.Contains("Cannot insert duplicate key row in object") == true)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator. Error: " + ex.InnerException?.Message);
+                }
+            }
+            // If ModelState is invalid, return the DTO to the view to preserve input
+            return View(userDto);
+        }
+
+        // GET: Users/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            // Map the User entity to UserEditDto for display in the edit form
+            var userDto = _mapper.Map<UserEditDto>(user);
+            return View(userDto);
+        }
+
+        // POST: Users/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // Accept UserEditDto as input
+        public async Task<IActionResult> Edit(int id, UserEditDto userDto)
+        {
+            if (id != userDto.Id) // Ensure the DTO ID matches the route ID
+            {
+                return NotFound();
+            }
+
+            // Retrieve the existing user entity from the database
+            var userToUpdate = await _context.Users.FindAsync(id);
+
+            if (userToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Map the DTO properties onto the existing entity
+                    _mapper.Map(userDto, userToUpdate);
+                    userToUpdate.UpdatedAt = DateTime.Now; // Update UpdatedAt timestamp
+
+                    _context.Entry(userToUpdate).State = EntityState.Modified; // Ensure EF tracks changes
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "User updated successfully!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(userDto.Id)) // Use DTO ID for existence check
                     {
-                        ModelState.AddModelError("", "This user is already assigned to this challenge.");
+                        return NotFound();
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Unable to assign challenge. " +
-                            "Try again, and if the problem persists, " +
-                            "see your system administrator. Error: " + ex.InnerException?.Message);
+                        ModelState.AddModelError("", "The record you attempted to edit "
+                            + "was modified by another user after you got the original value. "
+                            + "The edit operation was canceled and the current values in the database "
+                            + "have been displayed. If you still want to edit this record, click "
+                            + "the Save button again.");
                     }
                 }
+                catch (DbUpdateException ex)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator. Error: " + ex.InnerException?.Message);
+                }
             }
-
-            // Re-populate dropdowns if ModelState is invalid
-            ViewData["Users"] = new SelectList(await _context.Users.OrderBy(u => u.Username).ToListAsync(), "Id", "Username", userChallenge.UserId);
-            ViewData["Challenges"] = new SelectList(await _context.Challenges.OrderBy(c => c.Title).ToListAsync(), "Id", "Title", userChallenge.ChallengeId);
-            return View(userChallenge);
+            // If ModelState is invalid, return the DTO to the view to preserve input
+            return View(userDto);
         }
 
-        // POST: UserChallenges/Delete
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int userId, int challengeId)
+        // GET: Users/Delete/5
+        public async Task<IActionResult> Delete(int id)
         {
-            var userChallenge = await _context.UserChallenges.FindAsync(userId, challengeId);
-            if (userChallenge == null)
+            // For delete, you might still want to display the full User or a UserDetailsDto
+            // For simplicity, keeping it as User for now, but could be refactored to UserDetailsDto
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
-                return NotFound(); // Already un-assigned or never existed
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        // POST: Users/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
             }
 
             try
             {
-                _context.UserChallenges.Remove(userChallenge);
+                _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Challenge un-assigned successfully.";
+                TempData["SuccessMessage"] = "User deleted successfully!";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateConcurrencyException)
             {
-                // Note: Concurrency for composite keys can be tricky with FindAsync. 
-                // A more robust check might involve reloading and re-checking.
-                // For simplicity here, we assume if it's not found, it was deleted concurrently.
-                if (!UserChallengeExists(userId, challengeId))
+                if (!UserExists(user.Id))
                 {
-                    TempData["ErrorMessage"] = "The challenge assignment was already deleted by another user.";
+                    TempData["ErrorMessage"] = "The user was already deleted by another user.";
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -112,18 +186,34 @@ namespace Challenges.Controllers
             }
             catch (DbUpdateException ex)
             {
-                ModelState.AddModelError("", "Unable to un-assign. " +
+                ModelState.AddModelError("", "Unable to delete. " +
                     "Try again, and if the problem persists, " +
                     "see your system administrator. Error: " + ex.InnerException?.Message);
             }
-            // If an error occurs and we're still in the method, redirect to index
-            return RedirectToAction(nameof(Index));
+            return View(user);
         }
 
-        // Helper method to check if a UserChallenge exists (composite key)
-        private bool UserChallengeExists(int userId, int challengeId)
+        // GET: Users/Details/5
+        public async Task<IActionResult> Details(int id)
         {
-            return _context.UserChallenges.Any(e => e.UserId == userId && e.ChallengeId == challengeId);
+            // Project directly into UserDetailsDto for read-only details view
+            var userDto = await _context.Users
+                .AsNoTracking()
+                .Where(u => u.Id == id)
+                .Select(u => _mapper.Map<UserDetailsDto>(u)) // Map User entity to UserDetailsDto
+                .FirstOrDefaultAsync();
+
+            if (userDto == null)
+            {
+                return NotFound();
+            }
+            return View(userDto);
+        }
+
+        // Helper method to check if a user exists
+        private bool UserExists(int id)
+        {
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

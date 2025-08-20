@@ -1,5 +1,6 @@
 using Challenges.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddRouting(options =>
 
 
 builder.Services.AddControllersWithViews();
+// In Program.cs, after builder.Services.AddControllersWithViews();
+builder.Services.AddAutoMapper(typeof(Program)); // This will find MappingProfile
 
 var app = builder.Build();
 
