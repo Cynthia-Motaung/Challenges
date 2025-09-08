@@ -4744,11 +4744,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\CAPACITI-JHB\\Source\\Repos\\Challenges\\Challenges.csproj",
+      "projectUniqueName": "C:\\Users\\CAPACITI-JHB\\Source\\Repos\\Challenge\\Challenges.csproj",
       "projectName": "Challenges",
-      "projectPath": "C:\\Users\\CAPACITI-JHB\\Source\\Repos\\Challenges\\Challenges.csproj",
+      "projectPath": "C:\\Users\\CAPACITI-JHB\\Source\\Repos\\Challenge\\Challenges.csproj",
       "packagesPath": "C:\\Users\\CAPACITI-JHB\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\CAPACITI-JHB\\Source\\Repos\\Challenges\\obj\\",
+      "outputPath": "C:\\Users\\CAPACITI-JHB\\Source\\Repos\\Challenge\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

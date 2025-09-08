@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/8x/wvQbmP8=",
+  "dgSpecHash": "3lgEjWlE0HI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\CAPACITI-JHB\\Source\\Repos\\Challenges\\Challenges.csproj",
+  "projectFilePath": "C:\\Users\\CAPACITI-JHB\\Source\\Repos\\Challenge\\Challenges.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\CAPACITI-JHB\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\CAPACITI-JHB\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
